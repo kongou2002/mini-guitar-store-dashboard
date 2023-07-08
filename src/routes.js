@@ -22,6 +22,7 @@ import Staffs from './pages/Staffs';
 
 import InterviewHOC from './pages/InterviewHOC';
 import { useSelector } from 'react-redux';
+import { Sale } from './pages/Sale';
 export default function Router() {
   const { staff } = useSelector((state) => state.staff);
   return useRoutes([
@@ -61,6 +62,10 @@ export default function Router() {
             {
               path: 'staffs',
               element: <Staffs />,
+            },
+            {
+              path: 'sale',
+              element: <Sale />,
             },
           ],
         },
