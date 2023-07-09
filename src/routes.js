@@ -22,9 +22,10 @@ import Staffs from './pages/Staffs';
 
 import InterviewHOC from './pages/InterviewHOC';
 import { useSelector } from 'react-redux';
+import { Sale } from './pages/Sale';
 export default function Router() {
-  const { staff } = useSelector((state) => state.staff);
-  return useRoutes([
+  const { staff } = useSelector( ( state ) => state.staff );
+  return useRoutes( [
     {
       element: <PrivateRoute />,
       children: [
@@ -62,6 +63,10 @@ export default function Router() {
               path: 'staffs',
               element: <Staffs />,
             },
+            {
+              path: 'sale',
+              element: <Sale />,
+            },
           ],
         },
       ],
@@ -84,5 +89,5 @@ export default function Router() {
       path: '*',
       element: <Navigate to="/404" replace />,
     },
-  ]);
+  ] );
 }

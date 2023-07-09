@@ -1,4 +1,4 @@
-import { filter, first } from 'lodash';
+import { filter, first, get, set } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useEffect, useState } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
@@ -179,6 +179,19 @@ export default function User() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const members = async () => {
+      dispatch(getAllMember());
+    };
+    members();
+  }, [loading]);
+
+  const handleLoading = () => {
+    setLoading(!loading);
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
