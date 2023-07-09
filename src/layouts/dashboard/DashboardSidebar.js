@@ -13,7 +13,7 @@ import Logo from '../../components/Logo';
 import Scrollbar from '../../components/Scrollbar';
 import NavSection from '../../components/NavSection';
 //
-import navConfig from './NavConfig';
+import navConfig, { navConfigForEmployee } from './NavConfig';
 import { useSelector } from 'react-redux';
 // ----------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
   const { pathname } = useLocation();
   const { staff } = useSelector((state) => state.staff);
   const isDesktop = useResponsive('up', 'lg');
-
+  console.log(staff.role);
   useEffect(() => {
     if (isOpenSidebar) {
       onCloseSidebar();
@@ -80,7 +80,7 @@ export default function DashboardSidebar({ isOpenSidebar, onCloseSidebar }) {
         </Link>
       </Box>
 
-      <NavSection navConfig={navConfig} />
+      <NavSection navConfig={staff.role === 'admin' ? navConfig : navConfigForEmployee} />
 
       <Box sx={{ flexGrow: 1 }} />
     </Scrollbar>
