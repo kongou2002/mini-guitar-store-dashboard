@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { subDays, subHours } from 'date-fns';
 import ArrowDownOnSquareIcon from '@heroicons/react/24/solid/ArrowDownOnSquareIcon';
 import ArrowUpOnSquareIcon from '@heroicons/react/24/solid/ArrowUpOnSquareIcon';
@@ -8,109 +8,48 @@ import { BillsTable } from 'src/sections/bill/bills-table';
 import { BillsSearch } from 'src/sections/bill/bills-search';
 import { applyPagination } from 'src/utils/apply-pagination';
 import { BillsCreate } from 'src/sections/bill/bills-create';
+import { useSelector } from 'react-redux';
+import { set } from 'lodash';
 
 const now = new Date();
 
-const data = [
-  {
-    id: '5e887ac47eed25',
-    address: {
-      city: 'Cleveland',
-      country: 'USA',
-      state: 'Ohio',
-      street: '2849 Fulton Street'
-    },
-    avatar: '/assets/avatars/avatar-carson-darrin.png',
-    createdAt: subDays(subHours(now, 7), 1).getTime(),
-    price: 123.5,
-    name: 'Carson Darrin',
-    phone: '304-428-3097',
-    payment: "Cash",
-    items: [{
-        name: "Guitar Acoustic GA-14HL",
-        amount: 2,
-        price: 50
-    },{
-        name: "Guitar Classic GC-14HV",
-        amount: 2,
-        price: 40
-    },{
-        name: "Guitar Acoustic GA-18HL",
-        amount: 2,
-        price: 33.5
-    }]
-  },
-  {
-    id: '5e887b209c28ac',
-    address: {
-      city: 'Atlanta',
-      country: 'USA',
-      state: 'Georgia',
-      street: '1865  Pleasant Hill Road'
-    },
-    avatar: '/assets/avatars/avatar-fran-perez.png',
-    createdAt: subDays(subHours(now, 1), 2).getTime(),
-    price: '66.4',
-    name: 'Fran Perez',
-    phone: '712-351-5711',
-    payment: "Credit",
-    items: [{
-        name: "Guitar Acoustic GA-14HL",
-        amount: 2,
-        price: 50
-    },{
-        name: "Guitar Classic GC-14HV",
-        amount: 2,
-        price: 40
-    },{
-        name: "Guitar Acoustic GA-18HL",
-        amount: 2,
-        price: 32
-    }]
-  },
-  {
-    id: '5e887b7602bdbc',
-    address: {
-      city: 'North Canton',
-      country: 'USA',
-      state: 'Ohio',
-      street: '4894  Lakeland Park Drive'
-    },
-    avatar: '/assets/avatars/avatar-jie-yan-song.png',
-    createdAt: subDays(subHours(now, 4), 2).getTime(),
-    price: '76',
-    name: 'Jie Yan Song',
-    phone: '770-635-2682',
-    payment: "Cash",
-    items: [{
-        name: "Guitar Acoustic GA-14HL",
-        amount: 2,
-        price: 50
-    },{
-        name: "Guitar Classic GC-14HV",
-        amount: 2,
-        price: 40
-    },{
-        name: "Guitar Acoustic GA-18HL",
-        amount: 2,
-        price: 32
-    }]
-  },
-];
-
-const useBills = (page, rowsPerPage) => {
+// const useData = async(token) => {
+//   let result;
+//   return useMemo(
+//     async() => {
+//   const fetchData = async () => {
+//     const response = await fetch('http://localhost:8000/api/sale',{
+//       method: 'GET',
+//       headers: {
+//         'Content-Type': 'application/json',
+//         authorization: `Bearer ${token}`,
+//       },
+//     });
+//     const data = await response.json();
+//     result = data
+//   };
+//   await fetchData()
+//   //await fetchData();
+//   .then(() => {
+//     return result;
+//   })
+//     },[]
+//   );
+// };
+const useBills = (page, rowsPerPage,data) => {
   return useMemo(
     () => {
-      return applyPagination(data, page, rowsPerPage);
-    },
-    [page, rowsPerPage]
-  );
+      const bills = applyPagination(data, page, rowsPerPage);
+      return bills;
+    },[page,rowsPerPage,data]);
 };
+
+
 
 const useBillIds = (bills) => {
   return useMemo(
     () => {
-      return bills.map((bill) => bill.id);
+      return bills.map((bill) => bill._id);
     },
     [bills]
   );
@@ -119,17 +58,35 @@ const useBillIds = (bills) => {
 export const Sale = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const bills = useBills(page, rowsPerPage);
+  const [data, setData] = useState([])
+  const token = useSelector((state) => state.staff.token);
+  // const data = useData(token);
+  // console.log(data)
+  const bills = useBills(page, rowsPerPage,data);
   const billsIds = useBillIds(bills);
   const billsSelection = useSelection(billsIds);
-
+  const [rerender, setRerender] = useState(false);
   const handlePageChange = useCallback(
     (event, value) => {
       setPage(value);
     },
     []
   );
-
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch('http://localhost:8000/api/sale',{
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      setData(data)
+    }
+    fetchData()
+  }, [rerender])
+  console.log(data)
   const handleRowsPerPageChange = useCallback(
     (event) => {
       setRowsPerPage(event.target.value);
@@ -183,7 +140,7 @@ export const Sale = () => {
                 </Stack>
               </Stack>
               <div>
-                <BillsCreate />
+                <BillsCreate loadBill = {setRerender} />
               </div>
             </Stack>
             {/* <BillsSearch /> */}

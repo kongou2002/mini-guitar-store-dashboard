@@ -58,18 +58,20 @@ const ContentStyle = styled('div')(({ theme }) => ({
 
 // ----------------------------------------------------------------------
 
+
 export default function Login() {
   let nav = useNavigate();
   const smUp = useResponsive('up', 'sm');
 
   const mdUp = useResponsive('up', 'md');
 
-  const { staff, auth } = useSelector((state) => state.staff);
+  const staff = useSelector((state) => state.staff);
   useEffect(() => {
-    if (auth) {
-      nav('/');
+    if (staff.auth) {
+      console.log("3")
+      nav('/dashboard');
     }
-  }, [auth, nav]);
+  }, [staff.auth, nav]);
   return (
     <Page title="Login">
       <RootStyle>

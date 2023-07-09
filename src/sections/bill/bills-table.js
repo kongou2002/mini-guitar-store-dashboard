@@ -60,26 +60,26 @@ export const BillsTable = (props) => {
                 <TableCell>Bill ID</TableCell>
                 <TableCell>Price</TableCell>
                 <TableCell>Items</TableCell>
-                <TableCell>Phone</TableCell>
+                {/* <TableCell>Phone</TableCell> */}
                 <TableCell>Staff</TableCell>
                 <TableCell>Signed Up</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {items.map((bill) => {
-                const isSelected = selected.includes(bill.id);
-                const createdAt = format(bill.createdAt, 'dd/MM/yyyy');
+                const isSelected = selected.includes(bill._id);
+                const createdAt = bill.timestamp ? format(new Date(bill.timestamp), 'dd/MM/yyyy') : '-';
 
                 return (
-                  <TableRow hover key={bill.id} selected={isSelected}>
+                  <TableRow hover key={bill._id} selected={isSelected}>
                     <TableCell padding="checkbox">
                       <Checkbox
                         checked={isSelected}
                         onChange={(event) => {
                           if (event.target.checked) {
-                            onSelectOne?.(bill.id);
+                            onSelectOne?.(bill._id);
                           } else {
-                            onDeselectOne?.(bill.id);
+                            onDeselectOne?.(bill._id);
                           }
                         }}
                       />
@@ -89,7 +89,7 @@ export const BillsTable = (props) => {
                         {/* <Avatar src={bill.avatar}>
                           {getInitials(bill.name)}
                         </Avatar> */}
-                        <Typography variant="subtitle2">{bill.id}</Typography>
+                        <Typography variant="subtitle2">{bill._id}</Typography>
                       </Stack>
                     </TableCell>
                     <TableCell>{bill.price} $</TableCell>
@@ -105,11 +105,11 @@ export const BillsTable = (props) => {
                               </TableRow>
                             </TableHead>
                             <TableBody>
-                              {bill.items.map((item, index) => (
+                              {bill?.products?.map((item, index) => (
                                 <TableRow hover key={index}>
-                                  <TableCell>{item.name}</TableCell>
-                                  <TableCell align="center">{item.amount}</TableCell>
-                                  <TableCell>{item.price} $</TableCell>
+                                  <TableCell>{item.productId.model}</TableCell>
+                                  <TableCell align="center">{item.quantity}</TableCell>
+                                  <TableCell>{item.productId.price * item.quantity} $</TableCell>
                                 </TableRow>
                               ))}
                             </TableBody>
@@ -117,11 +117,11 @@ export const BillsTable = (props) => {
                         </Select>
                       </FormControl>
                     </TableCell>
-                    <TableCell>{bill.phone}</TableCell>
+                    {/* <TableCell>{bill.phone}</TableCell> */}
                     <TableCell>
                       <Stack alignItems="center" direction="row" spacing={2}>
-                        <Avatar src={bill.avatar}>{getInitials(bill.name)}</Avatar>
-                        <Typography variant="subtitle2">{bill.name}</Typography>
+                        <Avatar src={bill?.avatar}>{getInitials(bill.employeeId.firstName)}</Avatar>
+                        <Typography variant="subtitle2">{bill.employeeId.firstName}</Typography>
                       </Stack>
                     </TableCell>
                     <TableCell>{createdAt}</TableCell>

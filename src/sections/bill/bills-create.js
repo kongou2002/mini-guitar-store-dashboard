@@ -9,16 +9,17 @@ import { Autocomplete, IconButton, SvgIcon, Table, TableBody, TableCell, TableHe
 import CloseIcon from '@mui/icons-material/Close';
 import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { CreateButton } from 'src/components/button/CreateButton';
+import { useSelector } from 'react-redux';
 
-export const BillsCreate = () => {
+export const BillsCreate = ({loadBill}) => {
   const [open, setOpen] = React.useState(false);
   const [scroll, setScroll] = React.useState('paper');
   const [products, setProducts] = React.useState([])
   const [total, setTotal] = React.useState(0)
   const [guitars, setGuitars] = React.useState([
-    {model: "123", price: 12},
-    {model: "2321", price: 23}
+  
   ])
+  const token = useSelector((state) => state.staff.token);
 
   const handleClickOpen = (scrollType) => () => {
     setOpen(true);
@@ -26,6 +27,7 @@ export const BillsCreate = () => {
   };
 
   const handleClose = () => {
+    loadBill(pre=>!pre)
     setOpen(false);
   };
 
@@ -57,28 +59,43 @@ export const BillsCreate = () => {
   };
 
   const createBill = () => {
+    const request = products.map((item) => ({
+     productId:item._id,
+     quantity:item.amount
+    }))
+    console.log(token)
     const createBillAPI = async () => {
       const response = await fetch(
-        "http://localhost:3001/products/all"
-      ).then((response) => response.json());
-
+        "http://localhost:8000/api/sale",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({products:request}),
+        }
+      ).then((response) => response.json())
+        .then(alert("Create bill success"));
+        setProducts([])
       if(response) {
         // loadBill
       }
     };
-    // createBillAPI()
+    createBillAPI()
   };
+
 
   React.useEffect(() => {
     if (open) {
       const getGuitarDataAPI = async () => {
         const response = await fetch(
-          "http://localhost:3001/products/all"
+          "http://localhost:8000/api/products/all"
         ).then((response) => response.json());
       
         setGuitars(response);
       };
-      // getGuitarDataAPI()
+      getGuitarDataAPI()
     }
   }, [open]);
 
