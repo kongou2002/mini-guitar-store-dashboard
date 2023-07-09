@@ -23,8 +23,8 @@ import Staffs from './pages/Staffs';
 import InterviewHOC from './pages/InterviewHOC';
 import { useSelector } from 'react-redux';
 export default function Router() {
-  const { staff } = useSelector((state) => state.staff);
-  return useRoutes([
+  const { staff } = useSelector( ( state ) => state.staff );
+  return useRoutes( [
     {
       element: <PrivateRoute />,
       children: [
@@ -84,5 +84,5 @@ export default function Router() {
       path: '*',
       element: <Navigate to="/404" replace />,
     },
-  ]);
+  ] );
 }
