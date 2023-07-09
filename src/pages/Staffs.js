@@ -217,6 +217,7 @@ export default function Staffs() {
                         <TableCell align="left">{email}</TableCell>
 
                         <TableCell align="center">{role}</TableCell>
+                        <TableCell align="center">{status}</TableCell>
 
                         {/* <TableCell align="center">{isVerified ? 'Yes' : 'No'}</TableCell> */}
 
