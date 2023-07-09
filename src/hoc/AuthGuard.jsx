@@ -5,7 +5,7 @@ const PrivateRoute = () => {
     const staff = useSelector(state => state.staff)
     // alert(staff.auth)
     return (
-        staff.auth ? <Outlet /> : <Navigate to='/login' />
+        !staff.auth ? <Outlet /> : <Navigate to='/login' />
     )
 }
 

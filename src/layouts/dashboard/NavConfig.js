@@ -51,6 +51,11 @@ const navConfig = [
     path: '/dashboard/staffs',
     icon: getIcon('eva:people-fill'),
   },
+  {
+    title: 'Sale',
+    path: '/dashboard/sale',
+    icon: getIcon('material-symbols:point-of-sale'),
+  },
   // {
   //   title: 'Final Result',
   //   path: '/dashboard/hrmanager',
